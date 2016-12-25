@@ -42,7 +42,7 @@ void MessageLoop()
 	}
 }
 
-DWORD WINAPI my_HotKey(LPVOID lpParm)
+DWORD WINAPI CapsLockKillerHook(LPVOID lpParm)
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 	if (!hInstance) hInstance = LoadLibrary((LPCSTR)lpParm);
@@ -58,9 +58,11 @@ int main(int argc, char** argv)
 {
 	HANDLE hThread;
 	DWORD dwThread;
-	printf("DIE DIE DIE CAPSLOCK\n");
+	printf("Simple tool created by Toyz which allows you to kill capslock\n");
+	printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
+	printf("LICENSED UNDER APACHE 2.0\n");
 
-	hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)my_HotKey, (LPVOID)argv[0], NULL, &dwThread);
+	hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
 
 #ifndef _DEBUG
 	ShowWindow(FindWindowA("ConsoleWindowClass", NULL), false);
