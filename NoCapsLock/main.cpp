@@ -4,11 +4,25 @@
 #include <iostream>
 #include <windows.h>
 #include <stdio.h>
+#include <shellapi.h>
+#include "resource.h"
+
+#define WM_MYMESSAGE (WM_USER + 1)
+
+#if _DEBUG
+#define SHOW_WINDOW 1
+#else
+#define SHOW_WINDOW 0
+#endif
 
 HHOOK hKeyboardHook;
 
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
+	DWORD SHIFT_key = 0;
+	DWORD CTRL_key = 0;
+	DWORD ALT_key = 0;
+
 	if ((nCode == HC_ACTION) && ((wParam == WM_SYSKEYDOWN) || (wParam == WM_KEYDOWN)))
 	{
 		KBDLLHOOKSTRUCT hooked_key = *((KBDLLHOOKSTRUCT*)lParam);
@@ -27,6 +41,27 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 				keybd_event(VK_CAPITAL, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 			}
 		}
+
+		SHIFT_key = GetAsyncKeyState(VK_SHIFT);
+		CTRL_key = GetAsyncKeyState(VK_CONTROL);
+		ALT_key = GetAsyncKeyState(VK_MENU);
+
+		if (key >= 'A' && key <= 'Z')
+		{
+
+			if (GetAsyncKeyState(VK_SHIFT) >= 0) key += 32;
+
+			// Lets you quit the program lmao
+			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'Q')
+			{
+				PostQuitMessage(0);
+			}
+
+			SHIFT_key = 0;
+			CTRL_key = 0;
+			ALT_key = 0;
+		}
+
 	}
 
 	return CallNextHookEx(hKeyboardHook, nCode, wParam, lParam);
@@ -54,6 +89,38 @@ DWORD WINAPI CapsLockKillerHook(LPVOID lpParm)
 	return 0;
 }
 
+LRESULT OnMessageCallback(WPARAM wParam, LPARAM lParam)
+{
+	if (lParam == WM_RBUTTONDOWN)
+	{	// Popup
+		printf("right click was pressed\n");
+		return -1;
+	}
+
+	return 0; // 0=not handled 1=handled
+}
+
+
+void TaskbarNotify() {
+
+	NOTIFYICONDATA Tray;
+	HWND hWnd;
+	hWnd = FindWindow("ConsoleWindowClass", NULL);
+	ShowWindow(hWnd, SHOW_WINDOW);
+	Tray.cbSize = sizeof(Tray);
+
+	//Custom icons one day D:
+	Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+
+	Tray.hWnd = hWnd;
+	strcpy_s(Tray.szTip, "NoCapLock - Running");
+	Tray.uCallbackMessage = WM_MYMESSAGE;
+	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
+	Tray.uID = 1;
+	Shell_NotifyIcon(NIM_ADD, &Tray);
+}
+
+
 int main(int argc, char** argv)
 {
 	HANDLE hThread;
@@ -68,8 +135,7 @@ int main(int argc, char** argv)
 	ShowWindow(FindWindowA("ConsoleWindowClass", NULL), false);
 #endif // !DEBUG
 
-
-
+	TaskbarNotify();
 	if (hThread) return WaitForSingleObject(hThread, INFINITE);
 	else return 1;
 
