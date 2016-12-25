@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 HHOOK hKeyboardHook;
-DWORD CAPS_key = 0;
 
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
