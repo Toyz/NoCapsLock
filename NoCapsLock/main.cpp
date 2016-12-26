@@ -17,6 +17,10 @@
 
 HHOOK hKeyboardHook;
 
+HWND GetConsoleWindow() {
+	return FindWindow("ConsoleWindowClass", NULL);
+}
+
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	DWORD SHIFT_key = 0;
@@ -89,37 +93,20 @@ DWORD WINAPI CapsLockKillerHook(LPVOID lpParm)
 	return 0;
 }
 
-LRESULT OnMessageCallback(WPARAM wParam, LPARAM lParam)
-{
-	if (lParam == WM_RBUTTONDOWN)
-	{	// Popup
-		printf("right click was pressed\n");
-		return -1;
-	}
-
-	return 0; // 0=not handled 1=handled
-}
-
-
 void TaskbarNotify() {
+	HWND hWnd = GetConsoleWindow();
 
 	NOTIFYICONDATA Tray;
-	HWND hWnd;
-	hWnd = FindWindow("ConsoleWindowClass", NULL);
 	ShowWindow(hWnd, SHOW_WINDOW);
 	Tray.cbSize = sizeof(Tray);
-
-	//Custom icons one day D:
 	Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-
 	Tray.hWnd = hWnd;
-	strcpy_s(Tray.szTip, "NoCapLock - Running");
+	strcpy_s(Tray.szTip, "NoCapsLock - Running");
 	Tray.uCallbackMessage = WM_MYMESSAGE;
 	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
 	Tray.uID = 1;
 	Shell_NotifyIcon(NIM_ADD, &Tray);
 }
-
 
 int main(int argc, char** argv)
 {
@@ -131,12 +118,7 @@ int main(int argc, char** argv)
 
 	hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
 
-#ifndef _DEBUG
-	ShowWindow(FindWindowA("ConsoleWindowClass", NULL), false);
-#endif // !DEBUG
-
 	TaskbarNotify();
 	if (hThread) return WaitForSingleObject(hThread, INFINITE);
 	else return 1;
-
 }
