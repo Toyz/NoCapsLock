@@ -5,21 +5,12 @@
 #include <windows.h>
 #include <stdio.h>
 #include <shellapi.h>
+#include "defines.h"
 #include "resource.h"
-
-#define WM_MYMESSAGE (WM_USER + 1)
-
-#if _DEBUG
-#define SHOW_WINDOW 1
-#else
-#define SHOW_WINDOW 0
-#endif
+#include "helpers.h"
+#include "WindowHelpers.h"
 
 HHOOK hKeyboardHook;
-
-HWND GetConsoleWindow() {
-	return FindWindow("ConsoleWindowClass", NULL);
-}
 
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -58,7 +49,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 			// Lets you quit the program lmao
 			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'Q')
 			{
-				PostQuitMessage(0);
+				PostMessage(helpers::GetNoCapsLockWindow(), WM_CLOSE, 0, 0);
 			}
 
 			SHIFT_key = 0;
@@ -93,59 +84,33 @@ DWORD WINAPI CapsLockKillerHook(LPVOID lpParm)
 	return 0;
 }
 
-void TaskbarNotify() {
-	HWND hWnd = GetConsoleWindow();
-
-	NOTIFYICONDATA Tray;
-	ShowWindow(hWnd, SHOW_WINDOW);
-	Tray.cbSize = sizeof(Tray);
-	Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	Tray.hWnd = hWnd;
-	strcpy_s(Tray.szTip, "NoCapsLock - Running");
-	Tray.uCallbackMessage = WM_MYMESSAGE;
-	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
-	Tray.uID = 1;
-	Shell_NotifyIcon(NIM_ADD, &Tray);
-}
-
-bool CheckOneInstance()
-{
-
-	HANDLE  m_hStartEvent = CreateEventW(NULL, FALSE, FALSE, L"Global\\CSAPP");
-
-	if (m_hStartEvent == NULL)
-	{
-		CloseHandle(m_hStartEvent);
-		return false;
-	}
-
-
-	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-		CloseHandle(m_hStartEvent);
-		m_hStartEvent = NULL;
-		return false;
-	}
-
-	return true;
+void CreateWindowThread() {
+	WindowHelpers winhelpers;
+	winhelpers.CreateWndProc();
 }
 
 int main(int argc, char** argv)
 {
-	if (CheckOneInstance()) {
+	if (helpers::CheckOneInstance()) {
 		HANDLE hThread;
+		HANDLE wThread;
 		DWORD dwThread;
+		DWORD dwwThread;
+
 		printf("Simple tool created by Toyz which allows you to kill capslock\n");
 		printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
 		printf("LICENSED UNDER APACHE 2.0\n");
 
 		hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
+		wThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CreateWindowThread, (LPVOID)argv[0], NULL, &dwwThread);
 
-		TaskbarNotify();
+		ShowWindow(helpers::GetConsoleWindow(), SHOW_WINDOW);
 		if (hThread) return WaitForSingleObject(hThread, INFINITE);
+		if (wThread) return WaitForSingleObject(wThread, INFINITE);
 		else return 1;
 	}
 	else {
-		ShowWindow(GetConsoleWindow(), 0);
+		ShowWindow(helpers::GetConsoleWindow(), 0);
 		MessageBox(HWND_DESKTOP, "Only one instance can be running at a given time!", "ERROR - NoCapsLock", MB_ICONERROR | MB_OK);
 		return 0;
 	}

@@ -114,10 +114,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="helpers.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="WindowHelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="defines.h" />
+    <ClInclude Include="helpers.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="WindowHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NoCapsLock.rc" />
