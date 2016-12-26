@@ -108,17 +108,46 @@ void TaskbarNotify() {
 	Shell_NotifyIcon(NIM_ADD, &Tray);
 }
 
+bool CheckOneInstance()
+{
+
+	HANDLE  m_hStartEvent = CreateEventW(NULL, FALSE, FALSE, L"Global\\CSAPP");
+
+	if (m_hStartEvent == NULL)
+	{
+		CloseHandle(m_hStartEvent);
+		return false;
+	}
+
+
+	if (GetLastError() == ERROR_ALREADY_EXISTS) {
+
+		CloseHandle(m_hStartEvent);
+		m_hStartEvent = NULL;
+		return false;
+	}
+
+	return true;
+}
+
 int main(int argc, char** argv)
 {
-	HANDLE hThread;
-	DWORD dwThread;
-	printf("Simple tool created by Toyz which allows you to kill capslock\n");
-	printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
-	printf("LICENSED UNDER APACHE 2.0\n");
+	if (CheckOneInstance()) {
+		HANDLE hThread;
+		DWORD dwThread;
+		printf("Simple tool created by Toyz which allows you to kill capslock\n");
+		printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
+		printf("LICENSED UNDER APACHE 2.0\n");
 
-	hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
+		hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
 
-	TaskbarNotify();
-	if (hThread) return WaitForSingleObject(hThread, INFINITE);
-	else return 1;
+		TaskbarNotify();
+		if (hThread) return WaitForSingleObject(hThread, INFINITE);
+		else return 1;
+	}
+	else {
+		ShowWindow(GetConsoleWindow(), 0);
+		MessageBox(HWND_DESKTOP, "Only one instance can be running at a given time!", "ERROR", MB_ICONERROR | MB_OK);
+		return 0;
+	}
 }
