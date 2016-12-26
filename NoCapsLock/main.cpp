@@ -147,7 +147,7 @@ int main(int argc, char** argv)
 	}
 	else {
 		ShowWindow(GetConsoleWindow(), 0);
-		MessageBox(HWND_DESKTOP, "Only one instance can be running at a given time!", "ERROR", MB_ICONERROR | MB_OK);
+		MessageBox(HWND_DESKTOP, "Only one instance can be running at a given time!", "ERROR - NoCapsLock", MB_ICONERROR | MB_OK);
 		return 0;
 	}
 }
