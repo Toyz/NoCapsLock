@@ -8,5 +8,6 @@ public:
 	static HWND GetConsoleWindow();
 	static HWND GetNoCapsLockWindow();
 	static bool CheckOneInstance();
+	static void DisableCapsLock();
 };
 

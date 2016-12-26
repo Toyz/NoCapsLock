@@ -1,7 +1,21 @@
 #include "WindowHelpers.h"
 
+bool WindowHelpers::isCapsLockingDisabled;
+
+WindowHelpers::WindowHelpers() {
+	isCapsLockingDisabled = true;
+}
+
 HWND WindowHelpers::getHandler() {
 	return hwndWindow;
+}
+
+bool WindowHelpers::isNoCapsLockEnabled() {
+	return isCapsLockingDisabled;
+}
+
+void WindowHelpers::SetIsDisabled(bool enabled) {
+	isCapsLockingDisabled = enabled;
 }
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
@@ -65,7 +79,16 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 		case WM_RBUTTONUP:
 			POINT cursor;
 			GetCursorPos(&cursor);
-			TrackPopupMenu((HMENU)GetSubMenu(LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1)), 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
+			HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
+
+			if (isCapsLockingDisabled) {
+				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_CHECKED);
+			}
+			else {
+				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_UNCHECKED);
+			}
+
+			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
 			break;
 		}
 		break;
@@ -76,6 +99,12 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
 			PostQuitMessage(0);
 			break;
+		case ID__BLOCKCAPSLOCK:
+			isCapsLockingDisabled = !isCapsLockingDisabled;
+
+			if (isCapsLockingDisabled) {
+				helpers::DisableCapsLock();
+			}
 		}
 
 		break;

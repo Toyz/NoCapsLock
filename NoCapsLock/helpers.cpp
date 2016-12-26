@@ -26,3 +26,8 @@ bool helpers::CheckOneInstance() {
 
 	return true;
 }
+
+void helpers::DisableCapsLock() {
+	keybd_event(VK_CAPITAL, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
+	keybd_event(VK_CAPITAL, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+}

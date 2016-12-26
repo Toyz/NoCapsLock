@@ -30,10 +30,11 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		int key = hooked_key.vkCode;
 
-		if (hooked_key.vkCode == VK_CAPITAL) {
-			if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) {
-				keybd_event(VK_CAPITAL, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
-				keybd_event(VK_CAPITAL, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+		if (WindowHelpers::isNoCapsLockEnabled()) {
+			if (hooked_key.vkCode == VK_CAPITAL) {
+				if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) {
+					helpers::DisableCapsLock();
+				}
 			}
 		}
 
@@ -50,6 +51,16 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'Q')
 			{
 				PostMessage(helpers::GetNoCapsLockWindow(), WM_CLOSE, 0, 0);
+			}
+
+			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'D')
+			{
+				WindowHelpers::SetIsDisabled(true);
+			}
+
+			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'E')
+			{
+				WindowHelpers::SetIsDisabled(false);
 			}
 
 			SHIFT_key = 0;
