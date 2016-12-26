@@ -25,7 +25,7 @@ void WindowHelpers::TaskbarNotify(HWND hWnd) {
 	Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 	Tray.hWnd = hWnd;
 	strcpy_s(Tray.szTip, "NoCapsLock - Running");
-	Tray.uCallbackMessage = WM_MYMESSAGE;
+	Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
 	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
 	Tray.uID = 1;
 	Shell_NotifyIcon(NIM_ADD, &Tray);
@@ -40,7 +40,7 @@ int WindowHelpers::CreateWndProc() {
 	wc.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 	wc.hInstance = hInstance;
 	wc.lpfnWndProc = WndProc;
-	wc.lpszClassName = TEXT("NoCapsLockWindow");
+	wc.lpszClassName = TEXT(NOCAPSCLASS);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 
 	if (!RegisterClass(&wc))
@@ -49,13 +49,12 @@ int WindowHelpers::CreateWndProc() {
 		return 1;
 	}
 
-	hwndWindow = CreateWindow(TEXT("NoCapsLockWindow"),
+	hwndWindow = CreateWindow(TEXT(NOCAPSCLASS),
 		TEXT("NoCapsLockWindow - Window"),
 		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU,
 		520, 20, 300, 300,
 		helpers::GetConsoleWindow(),
 		NULL,
-
 		hInstance, NULL);
 
 	UpdateWindow(hwndWindow);
@@ -73,7 +72,7 @@ int WindowHelpers::CreateWndProc() {
 LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	switch (message) {
-	case WM_MYMESSAGE:
+	case WM_CONTEXTMSGEVENT:
 		switch (lparam) {
 		case WM_RBUTTONUP:
 			POINT cursor;

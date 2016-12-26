@@ -5,7 +5,7 @@ HWND helpers::GetConsoleWindow() {
 }
 
 HWND helpers::GetNoCapsLockWindow() {
-	return FindWindow("NoCapsLockWindow", NULL);
+	return FindWindow(NOCAPSCLASS, NULL);
 }
 
 bool helpers::CheckOneInstance() {
