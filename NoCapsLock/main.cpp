@@ -55,12 +55,12 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'D')
 			{
-				WindowHelpers::SetIsDisabled(true);
+				WindowHelpers::SetIsDisabled(false);
 			}
 
 			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'E')
 			{
-				WindowHelpers::SetIsDisabled(false);
+				WindowHelpers::SetIsDisabled(true);
 			}
 
 			SHIFT_key = 0;

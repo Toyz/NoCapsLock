@@ -50,7 +50,7 @@ int WindowHelpers::CreateWndProc() {
 	}
 
 	hwndWindow = CreateWindow(TEXT("NoCapsLockWindow"),
-		TEXT("the window"),
+		TEXT("NoCapsLockWindow - Window"),
 		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU,
 		520, 20, 300, 300,
 		helpers::GetConsoleWindow(),
@@ -58,7 +58,6 @@ int WindowHelpers::CreateWndProc() {
 
 		hInstance, NULL);
 
-	ShowWindow(hwndWindow, SW_SHOWNORMAL); 
 	UpdateWindow(hwndWindow);
 	TaskbarNotify(hwndWindow);
 
@@ -81,6 +80,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			GetCursorPos(&cursor);
 			HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
 
+			SetForegroundWindow(hwnd);
 			if (isCapsLockingDisabled) {
 				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_CHECKED);
 			}
@@ -105,6 +105,9 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			if (isCapsLockingDisabled) {
 				helpers::DisableCapsLock();
 			}
+		case ID__SOURCECODE:
+			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
+			break;
 		}
 
 		break;
