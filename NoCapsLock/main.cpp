@@ -121,7 +121,6 @@ bool CheckOneInstance()
 
 
 	if (GetLastError() == ERROR_ALREADY_EXISTS) {
-
 		CloseHandle(m_hStartEvent);
 		m_hStartEvent = NULL;
 		return false;
