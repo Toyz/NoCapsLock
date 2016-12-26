@@ -32,7 +32,7 @@ void WindowHelpers::TaskbarNotify(HWND hWnd) {
 }
 
 int WindowHelpers::CreateWndProc() {
-	HINSTANCE hInstance = (HINSTANCE)GetWindowLong(helpers::GetConsoleWindow(), GWL_HINSTANCE);
+	HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(helpers::GetConsoleWindow(), GWLP_HINSTANCE);
 
 	WNDCLASS wc = { 0 };
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
