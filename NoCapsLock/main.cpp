@@ -5,6 +5,11 @@
 #include <windows.h>
 #include <stdio.h>
 #include <shellapi.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+
 #include "defines.h"
 #include "resource.h"
 #include "helpers.h"
@@ -93,15 +98,52 @@ void CreateWindowThread() {
 }
 
 void AddKeysToManager() {
-	KeyManager::AddKey(VK_APPS, KeyObject::CreateKey("Disable Apps Key", true));
-	KeyManager::AddKey(VK_LWIN, KeyObject::CreateKey("Disable Left Windows Key", true));
-	KeyManager::AddKey(VK_RWIN, KeyObject::CreateKey("Disable Right Windows Key", true));
-	KeyManager::AddKey(VK_CAPITAL, KeyObject::CreateKey("Disable Caps Lock", true));
+	std::ifstream myfile;
+	myfile.open("keys.txt");
+
+	std::string line;
+	while (std::getline(myfile, line))
+	{
+		if (std::empty(line)) continue;
+		
+		std::vector<std::string> values;
+		int test = helpers::split(line, values, '|');
+
+		if (line.at(0) == '#') continue;
+		if (test <= 0 || values.size() <= 0) continue;
+		int key = std::stoi(values[0]);
+		bool enabled = helpers::StringToBool(values[1]);
+		std::string title = values[2];
+
+		KeyManager::AddKey(key, KeyObject::CreateKey(title, enabled));
+	}
+}
+
+BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
+{
+	printf("Called closing hook?\n");
+	switch (dwCtrlType) {
+	case CTRL_CLOSE_EVENT:
+		std::ofstream myfile;
+		myfile.open("keys.txt");
+
+		std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
+		std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
+		for (it = keys.begin(); it != keys.end(); it++)
+		{
+			myfile << it->first << "|" << it->second.enabled << "|" << it->second.title << "\n";
+		}
+		myfile.close();
+		break;
+	}
+
+	return true;
 }
 
 int main(int argc, char** argv)
 {
 	if (helpers::CheckOneInstance()) {
+		BOOL ret = SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
 		HANDLE hThread;
 		HANDLE wThread;
 		DWORD dwThread;

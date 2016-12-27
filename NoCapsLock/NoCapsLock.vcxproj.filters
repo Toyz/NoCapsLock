@@ -50,4 +50,7 @@
   <ItemGroup>
     <Image Include="icon1.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="keys.txt" />
+  </ItemGroup>
 </Project>

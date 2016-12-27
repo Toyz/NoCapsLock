@@ -43,7 +43,7 @@ int WindowHelpers::CreateWndProc() {
 	HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(helpers::GetConsoleWindow(), GWLP_HINSTANCE);
 
 	WNDCLASS wc = { 0 };
-	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wc.hbrBackground = CreateSolidBrush(RGB(240, 240, 240));
 	wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
 	wc.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
 	wc.hInstance = hInstance;
@@ -58,9 +58,9 @@ int WindowHelpers::CreateWndProc() {
 	}
 
 	hwndWindow = CreateWindow(TEXT(NOCAPSCLASS),
-		TEXT("NoCapsLockWindow - Window"),
+		TEXT("Options - NoCapsLock"),
 		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU,
-		520, 20, 300, 300,
+		520, 20, 550, 400,
 		helpers::GetConsoleWindow(),
 		NULL,
 		hInstance, NULL);
@@ -77,9 +77,33 @@ int WindowHelpers::CreateWndProc() {
 	return 0;
 }
 
+void WindowHelpers::CreateUI(HWND hwnd) {
+	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
+	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
+	
+	int startX = 2;
+	for (it = keys.begin(); it != keys.end(); it++)
+	{
+		CreateWindow(TEXT("button"), TEXT(it->second.title.c_str()),
+			WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
+			2, startX, 400, 20,
+			hwnd, (HMENU) it->first, NULL, NULL);
+
+		CheckDlgButton(hwnd, it->first, it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
+		startX += 22;
+	}
+
+	HFONT defaultFont;
+	defaultFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+	SendMessage(hwnd, WM_SETFONT, WPARAM(defaultFont), TRUE);
+}
+
 LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	switch (message) {
+	case WM_CREATE:
+		CreateUI(hwnd);
+		break;
 	case WM_CONTEXTMSGEVENT:
 		switch (lparam) {
 		case WM_RBUTTONUP:
@@ -94,6 +118,12 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 				InsertMenu(hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
 				CheckMenuItem(hMenu, it->first, it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
 			}
+
+
+#if _DEBUG
+			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "Show Options");
+			InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, "Show Options");
+#endif
 
 			SetForegroundWindow(hwnd);
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
@@ -111,20 +141,25 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
 			break;
 
+		case ID__SHOWOPTIONS:
+			ShowWindow(hwnd, 1);
+			break;
 		default:
 			KeyObject::key_t KeyMeta = KeyManager::FindKey(wparam);
 
 			if (KeyMeta.title != "") {
 				KeyMeta.enabled = !KeyMeta.enabled;
+				CheckDlgButton(hwnd, wparam, KeyMeta.enabled ? BST_CHECKED : BST_UNCHECKED);
 				KeyManager::UpdateByKey(wparam, KeyMeta);
 			}
 		}
 
 		break;
-	case WM_DESTROY:
-		PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
-		PostQuitMessage(0);
-		break;
+	case WM_CLOSE:
+		//PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
+		//PostQuitMessage(0);
+		ShowWindow(hwnd, 0);
+		return true;
 	}
 
 	return DefWindowProc(hwnd, message, wparam, lparam);
