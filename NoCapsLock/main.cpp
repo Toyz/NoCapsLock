@@ -34,6 +34,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 			if (hooked_key.vkCode == VK_CAPITAL) {
 				if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) {
 					helpers::DisableCapsLock();
+					//return 1;
 				}
 			}
 		}
