@@ -119,8 +119,7 @@ int main(int argc, char** argv)
 		if (hThread) return WaitForSingleObject(hThread, INFINITE);
 		if (wThread) return WaitForSingleObject(wThread, INFINITE);
 		else return 1;
-	}
-	else {
+	} else {
 		ShowWindow(helpers::GetConsoleWindow(), 0);
 		MessageBox(HWND_DESKTOP, "Only one instance can be running at a given time!", "ERROR - NoCapsLock", MB_ICONERROR | MB_OK);
 		return 0;

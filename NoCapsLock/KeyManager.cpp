@@ -10,6 +10,15 @@ KeyObject::key_t KeyManager::FindKey(DWORD key) {
 	return { 0 };
 }
 
+KeyObject::key_t KeyManager::UpdateByKey(DWORD key, KeyObject::key_t newData) {
+	if (Exist(key)) {
+		key_map[key] = newData;
+		return newData;
+	}
+
+	return{ 0 };
+}
+
 KeyObject::key_t KeyManager::UpdateByValue(UINT key, KeyObject::key_t newData) {
 	std::map<DWORD, KeyObject::key_t>::iterator it;
 
