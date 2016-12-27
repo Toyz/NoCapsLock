@@ -34,7 +34,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		KeyObject::key_t key_st = KeyManager::FindKey(hooked_key.vkCode);
 
-		if (key_st.MenuID > 0) {
+		if (key_st.title != "") {
 			if (key_st.enabled) {
 				return 1;
 			}
@@ -93,10 +93,10 @@ void CreateWindowThread() {
 }
 
 void AddKeysToManager() {
-	KeyManager::AddKey(VK_APPS, KeyObject::CreateKey(ID__DISABLEAPPSKEY, "Disable Apps Key", true));
-	KeyManager::AddKey(VK_LWIN, KeyObject::CreateKey(ID__DISABLEWINDOWSKEYL, "Disable Left Windows Key", true));
-	KeyManager::AddKey(VK_RWIN, KeyObject::CreateKey(ID__DISABLEWINDOWSKEYR, "Disable Right Windows Key", true));
-	KeyManager::AddKey(VK_CAPITAL, KeyObject::CreateKey(ID__BLOCKCAPSLOCK, "Disable Caps Lock", true));
+	KeyManager::AddKey(VK_APPS, KeyObject::CreateKey("Disable Apps Key", true));
+	KeyManager::AddKey(VK_LWIN, KeyObject::CreateKey("Disable Left Windows Key", true));
+	KeyManager::AddKey(VK_RWIN, KeyObject::CreateKey("Disable Right Windows Key", true));
+	KeyManager::AddKey(VK_CAPITAL, KeyObject::CreateKey("Disable Caps Lock", true));
 }
 
 int main(int argc, char** argv)

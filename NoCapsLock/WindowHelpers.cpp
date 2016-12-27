@@ -87,12 +87,12 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			GetCursorPos(&cursor);
 			HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
 
-			std::map<DWORD, KeyObject::key_t> keys = KeyManager::GetKeyMap();
-			std::map<DWORD, KeyObject::key_t>::iterator it;
+			std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
+			std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
 			for (it = keys.begin(); it != keys.end(); it++)
 			{
-				InsertMenu(hMenu, 0, MFT_STRING, it->second.MenuID, it->second.title.c_str());
-				CheckMenuItem(hMenu, it->second.MenuID, it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
+				InsertMenu(hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
+				CheckMenuItem(hMenu, it->first, it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
 			}
 
 			SetForegroundWindow(hwnd);
@@ -112,11 +112,11 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			break;
 
 		default:
-			KeyObject::key_t KeyMeta = KeyManager::GetByValue(wparam);
+			KeyObject::key_t KeyMeta = KeyManager::FindKey(wparam);
 
-			if (KeyMeta.MenuID > 0) {
+			if (KeyMeta.title != "") {
 				KeyMeta.enabled = !KeyMeta.enabled;
-				KeyManager::UpdateByValue(wparam, KeyMeta);
+				KeyManager::UpdateByKey(wparam, KeyMeta);
 			}
 		}
 
