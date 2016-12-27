@@ -143,6 +143,9 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 int main(int argc, char** argv)
 {
 	if (helpers::CheckOneInstance()) {
+		if (!helpers::FileExist("keys.txt")) {
+			helpers::SaveResourceToFile("keys.txt", IDR_TEXT1);
+		}
 		BOOL ret = SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
 		HANDLE hThread;
 		HANDLE wThread;

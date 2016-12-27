@@ -26,6 +26,26 @@ bool helpers::StringToBool(const std::string & s) {
 	return s.at(0) == '1';
 }
 
+bool helpers::SaveResourceToFile(char *fn, int res) {
+	HRSRC hrsrc = FindResourceEx(GetModuleHandle(NULL),
+		TEXT("text"),
+		MAKEINTRESOURCE(res),
+		MAKELANGID(LANG_NEUTRAL,
+			SUBLANG_NEUTRAL));
+
+	if (hrsrc == NULL) return FALSE;
+	DWORD size = SizeofResource(GetModuleHandle(NULL), hrsrc);
+	HGLOBAL hglob = LoadResource(GetModuleHandle(NULL), hrsrc);
+	LPVOID rdata = LockResource(hglob);
+	HANDLE hFile =
+		CreateFile(fn, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	DWORD writ; WriteFile(hFile, rdata, size, &writ, NULL);
+	CloseHandle(hFile);
+	return TRUE;
+
+	return true;
+}
+
 unsigned int helpers::split(const std::string &txt, std::vector<std::string> &strs, char ch)
 {
 	int pos = txt.find(ch);

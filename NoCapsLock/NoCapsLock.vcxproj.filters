@@ -53,4 +53,10 @@
   <ItemGroup>
     <Text Include="keys.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="text_fil.bin" />
+    <None Include="bin00001.bin" />
+    <None Include="text2.bin" />
+    <None Include="raw_text.bin" />
+  </ItemGroup>
 </Project>
