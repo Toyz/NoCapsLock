@@ -8,3 +8,7 @@
 #define SHOW_WINDOW 0
 #endif
 
+#define ID__BLOCKCAPSLOCK               40004
+#define ID__DISABLEWINDOWSKEYL          40006
+#define ID__DISABLEAPPSKEY              40007
+#define ID__DISABLEWINDOWSKEYR          40008

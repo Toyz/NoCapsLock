@@ -9,6 +9,8 @@
 #include "resource.h"
 #include "helpers.h"
 #include "WindowHelpers.h"
+#include "KeyManager.h"
+#include "KeyObject.h"
 
 HHOOK hKeyboardHook;
 
@@ -30,23 +32,10 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		int key = hooked_key.vkCode;
 
-		if (!WindowHelpers::isNoCapsLockEnabled()) {
-			if (hooked_key.vkCode == VK_CAPITAL) {
-				if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) {
-					helpers::DisableCapsLock();
-					//return 1;
-				}
-			}
-		}
+		KeyObject::key_t key_st = KeyManager::FindKey(hooked_key.vkCode);
 
-		if (!WindowHelpers::isWindowsKeyEnabled()) {
-			if (hooked_key.vkCode == VK_LWIN || hooked_key.vkCode == VK_RWIN) {
-				return 1;
-			}
-		}
-
-		if (!WindowHelpers::isMenuKeyEnabled()) {
-			if (hooked_key.vkCode == VK_APPS) {
+		if (key_st.MenuID > 0) {
+			if (key_st.enabled) {
 				return 1;
 			}
 		}
@@ -103,6 +92,13 @@ void CreateWindowThread() {
 	winhelpers.CreateWndProc();
 }
 
+void AddKeysToManager() {
+	KeyManager::AddKey(VK_APPS, KeyObject::CreateKey(ID__DISABLEAPPSKEY, "Disable Apps Key", true));
+	KeyManager::AddKey(VK_LWIN, KeyObject::CreateKey(ID__DISABLEWINDOWSKEYL, "Disable Left Windows Key", true));
+	KeyManager::AddKey(VK_RWIN, KeyObject::CreateKey(ID__DISABLEWINDOWSKEYR, "Disable Right Windows Key", true));
+	KeyManager::AddKey(VK_CAPITAL, KeyObject::CreateKey(ID__BLOCKCAPSLOCK, "Disable Caps Lock", true));
+}
+
 int main(int argc, char** argv)
 {
 	if (helpers::CheckOneInstance()) {
@@ -111,6 +107,7 @@ int main(int argc, char** argv)
 		DWORD dwThread;
 		DWORD dwwThread;
 
+		AddKeysToManager();
 		printf("Simple tool created by Toyz which allows you to kill capslock\n");
 		printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
 		printf("LICENSED UNDER APACHE 2.0\n");

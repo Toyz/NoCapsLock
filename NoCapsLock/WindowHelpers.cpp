@@ -1,34 +1,15 @@
 #include "WindowHelpers.h"
 
-bool WindowHelpers::isCapsLockingDisabled;
-bool WindowHelpers::isWidowsKeyDisabled;
-bool WindowHelpers::isMenuKeyDisabled;
-
 bool WindowHelpers::ToolTipCreated = false;
 NOTIFYICONDATA WindowHelpers::Tray;
 
 WindowHelpers::WindowHelpers() {
-	isCapsLockingDisabled = false;
-	isWidowsKeyDisabled = false;
-	isMenuKeyDisabled = false;
 }
 
 HWND WindowHelpers::getHandler() {
 	return hwndWindow;
 }
 
-bool WindowHelpers::isNoCapsLockEnabled() {
-	return isCapsLockingDisabled;
-}
-
-bool WindowHelpers::isWindowsKeyEnabled()
-{
-	return isWidowsKeyDisabled;
-}
-
-bool WindowHelpers::isMenuKeyEnabled() {
-	return isMenuKeyDisabled;
-}
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
 	if (!ToolTipCreated) {
@@ -106,11 +87,15 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			GetCursorPos(&cursor);
 			HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
 
-			SetForegroundWindow(hwnd);
-			CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, isCapsLockingDisabled ? MF_UNCHECKED : MF_CHECKED);
-			CheckMenuItem(hMenu, ID__DISABLEWINDOWSKEY, isWidowsKeyDisabled ? MF_UNCHECKED : MF_CHECKED);
-			CheckMenuItem(hMenu, ID__DISABLEAPPSKEY, isMenuKeyDisabled ? MF_UNCHECKED : MF_CHECKED);
+			std::map<DWORD, KeyObject::key_t> keys = KeyManager::GetKeyMap();
+			std::map<DWORD, KeyObject::key_t>::iterator it;
+			for (it = keys.begin(); it != keys.end(); it++)
+			{
+				InsertMenu(hMenu, 0, MFT_STRING, it->second.MenuID, it->second.title.c_str());
+				CheckMenuItem(hMenu, it->second.MenuID, it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
+			}
 
+			SetForegroundWindow(hwnd);
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
 			break;
 		}
@@ -122,22 +107,17 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
 			PostQuitMessage(0);
 			break;
-
-		case ID__BLOCKCAPSLOCK:
-			isCapsLockingDisabled = !isCapsLockingDisabled;
-			break;
-
-		case ID__DISABLEWINDOWSKEY:
-			isWidowsKeyDisabled = !isWidowsKeyDisabled;
-			break;
-
-		case ID__DISABLEAPPSKEY:
-			isMenuKeyDisabled = !isMenuKeyDisabled;
-			break;
-
 		case ID__SOURCECODE:
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
 			break;
+
+		default:
+			KeyObject::key_t KeyMeta = KeyManager::GetByValue(wparam);
+
+			if (KeyMeta.MenuID > 0) {
+				KeyMeta.enabled = !KeyMeta.enabled;
+				KeyManager::UpdateByValue(wparam, KeyMeta);
+			}
 		}
 
 		break;
