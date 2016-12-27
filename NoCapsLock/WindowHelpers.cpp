@@ -1,9 +1,13 @@
 #include "WindowHelpers.h"
 
+UINT32 WindowHelpers::id;
 bool WindowHelpers::isCapsLockingDisabled;
+bool WindowHelpers::ToolTipCreated = false;
+NOTIFYICONDATA WindowHelpers::Tray;
 
 WindowHelpers::WindowHelpers() {
-	isCapsLockingDisabled = true;
+	isCapsLockingDisabled = false;
+	id = 0;
 }
 
 HWND WindowHelpers::getHandler() {
@@ -16,19 +20,57 @@ bool WindowHelpers::isNoCapsLockEnabled() {
 
 void WindowHelpers::SetIsDisabled(bool enabled) {
 	isCapsLockingDisabled = enabled;
+
+	if (!isCapsLockingDisabled) {
+		ChangeTrayTitle("NoCapsLock - Running");
+		TooltipBallon("Caps lock key is now disabled", "NoCapsLock - Stopped");
+	} else {
+		ChangeTrayTitle("NoCapsLock - Stopped");
+		TooltipBallon("Caps lock key is now enabled", "NoCapsLock - Running");
+	}
+
+}
+
+void WindowHelpers::TooltipBallon(const char * text, const char * title) {
+	printf("Fired me\n");
+	Tray.dwInfoFlags = NIIF_USER | NIIF_INFO;
+	Tray.uTimeout = 3500;
+
+	strcpy_s(Tray.szInfo, sizeof(Tray.szInfo), text);
+	strcpy_s(Tray.szInfoTitle, sizeof(Tray.szInfoTitle), title);
+	/*if (IsWindowsVistaOrGreater())
+		Tray.hBalloonIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));*/
+	Tray.uFlags |= NIF_REALTIME;
+
+	Shell_NotifyIcon(NIM_MODIFY | NIM_SETFOCUS, &Tray);
 }
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
-	NOTIFYICONDATA Tray;
-	ShowWindow(hWnd, SHOW_WINDOW);
-	Tray.cbSize = sizeof(Tray);
-	Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	Tray.hWnd = hWnd;
-	strcpy_s(Tray.szTip, "NoCapsLock - Running");
-	Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
-	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
-	Tray.uID = 1;
-	Shell_NotifyIcon(NIM_ADD, &Tray);
+	if (!ToolTipCreated) {
+		ShowWindow(hWnd, SHOW_WINDOW);
+		//Tray.cbSize = NOTIFYICONDATA_V2_SIZE;
+
+		if (IsWindowsVistaOrGreater()) {
+			Tray.cbSize = sizeof(Tray);
+			Tray.uVersion = NOTIFYICON_VERSION_4;
+		}
+
+		else if (IsWindowsXPOrGreater()) {
+			Tray.cbSize = NOTIFYICONDATA_V3_SIZE;
+			Tray.uVersion = NOTIFYICON_VERSION;
+		}
+
+		Shell_NotifyIcon(NIM_SETVERSION, &Tray);
+
+		Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
+		Tray.hWnd = hWnd;
+		strcpy_s(Tray.szTip, "NoCapsLock - Running");
+		Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
+		Tray.uFlags = NIF_ICON | NIF_INFO | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
+		Tray.uID = id;
+		Shell_NotifyIcon(NIM_ADD, &Tray);
+		ToolTipCreated = true;
+	}
 }
 
 int WindowHelpers::CreateWndProc() {
@@ -81,10 +123,10 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 			SetForegroundWindow(hwnd);
 			if (isCapsLockingDisabled) {
-				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_CHECKED);
+				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_UNCHECKED);
 			}
 			else {
-				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_UNCHECKED);
+				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_CHECKED);
 			}
 
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
@@ -98,12 +140,19 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
 			PostQuitMessage(0);
 			break;
+
 		case ID__BLOCKCAPSLOCK:
 			isCapsLockingDisabled = !isCapsLockingDisabled;
 
 			if (isCapsLockingDisabled) {
+				ChangeTrayTitle("NoCapsLock - Running");
 				helpers::DisableCapsLock();
+			} else {
+				ChangeTrayTitle("NoCapsLock - Stopped");
 			}
+
+			break;
+
 		case ID__SOURCECODE:
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
 			break;
@@ -117,4 +166,9 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 	}
 
 	return DefWindowProc(hwnd, message, wparam, lparam);
+}
+
+void WindowHelpers::ChangeTrayTitle(const char * title) {
+	strcpy_s(Tray.szTip, title);
+	Shell_NotifyIcon(NIM_MODIFY, &Tray);
 }

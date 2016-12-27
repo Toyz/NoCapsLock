@@ -1,4 +1,4 @@
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0601
 #pragma comment( lib, "user32.lib" )
 
 #include <iostream>
@@ -30,7 +30,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		int key = hooked_key.vkCode;
 
-		if (WindowHelpers::isNoCapsLockEnabled()) {
+		if (!WindowHelpers::isNoCapsLockEnabled()) {
 			if (hooked_key.vkCode == VK_CAPITAL) {
 				if ((GetKeyState(VK_CAPITAL) & 0x0001) == 0) {
 					helpers::DisableCapsLock();
@@ -53,14 +53,18 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 				PostMessage(helpers::GetNoCapsLockWindow(), WM_CLOSE, 0, 0);
 			}
 
-			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'D')
-			{
-				WindowHelpers::SetIsDisabled(false);
+			if (!WindowHelpers::isNoCapsLockEnabled()) {
+				if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'D')
+				{
+					WindowHelpers::SetIsDisabled(true);
+				}
 			}
 
-			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'E')
-			{
-				WindowHelpers::SetIsDisabled(true);
+			if (WindowHelpers::isNoCapsLockEnabled()) {
+				if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'E')
+				{
+					WindowHelpers::SetIsDisabled(false);
+				}
 			}
 
 			SHIFT_key = 0;
