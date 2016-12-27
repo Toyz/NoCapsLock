@@ -23,25 +23,10 @@ void WindowHelpers::SetIsDisabled(bool enabled) {
 
 	if (!isCapsLockingDisabled) {
 		ChangeTrayTitle("NoCapsLock - Running");
-		TooltipBallon("Caps lock key is now disabled", "NoCapsLock - Stopped");
 	} else {
 		ChangeTrayTitle("NoCapsLock - Stopped");
-		TooltipBallon("Caps lock key is now enabled", "NoCapsLock - Running");
 	}
 
-}
-
-void WindowHelpers::TooltipBallon(const char * text, const char * title) {
-	Tray.dwInfoFlags = NIIF_USER | NIIF_INFO;
-	Tray.uTimeout = 3500;
-
-	strcpy_s(Tray.szInfo, sizeof(Tray.szInfo), text);
-	strcpy_s(Tray.szInfoTitle, sizeof(Tray.szInfoTitle), title);
-	/*if (IsWindowsVistaOrGreater())
-		Tray.hBalloonIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));*/
-	Tray.uFlags |= NIF_REALTIME;
-
-	Shell_NotifyIcon(NIM_MODIFY | NIM_SETFOCUS, &Tray);
 }
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
@@ -65,7 +50,7 @@ void WindowHelpers::TaskbarNotify(HWND hWnd) {
 		Tray.hWnd = hWnd;
 		strcpy_s(Tray.szTip, "NoCapsLock - Running");
 		Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
-		Tray.uFlags = NIF_ICON | NIF_INFO | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
+		Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
 		Tray.uID = id;
 		Shell_NotifyIcon(NIM_ADD, &Tray);
 		ToolTipCreated = true;
@@ -169,5 +154,6 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 void WindowHelpers::ChangeTrayTitle(const char * title) {
 	strcpy_s(Tray.szTip, title);
+	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
 	Shell_NotifyIcon(NIM_MODIFY, &Tray);
 }

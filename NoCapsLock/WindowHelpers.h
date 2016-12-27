@@ -20,7 +20,6 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 	static bool isNoCapsLockEnabled();
 	static void SetIsDisabled(bool enabled);
-	static void TooltipBallon(const char * text, const char * title);
 
 private:
 	static void ChangeTrayTitle(const char * title);
