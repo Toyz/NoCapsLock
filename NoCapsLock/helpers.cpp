@@ -28,8 +28,8 @@ bool helpers::StringToBool(const std::string & s) {
 
 unsigned int helpers::split(const std::string &txt, std::vector<std::string> &strs, char ch)
 {
-	unsigned int pos = txt.find(ch);
-	unsigned int initialPos = 0;
+	int pos = txt.find(ch);
+	int initialPos = 0;
 	strs.clear();
 
 	// Decompose statement
@@ -41,7 +41,7 @@ unsigned int helpers::split(const std::string &txt, std::vector<std::string> &st
 	}
 
 	// Add the last one
-	strs.push_back(txt.substr(initialPos, (std::min)(pos, txt.size()) - initialPos + 1));
+	strs.push_back(txt.substr(initialPos, MyMinTool(pos, static_cast<int>(txt.size())) - initialPos + 1));
 
 	return strs.size();
 }
