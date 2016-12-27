@@ -1,13 +1,16 @@
 #include "WindowHelpers.h"
 
-UINT32 WindowHelpers::id;
 bool WindowHelpers::isCapsLockingDisabled;
+bool WindowHelpers::isWidowsKeyDisabled;
+bool WindowHelpers::isMenuKeyDisabled;
+
 bool WindowHelpers::ToolTipCreated = false;
 NOTIFYICONDATA WindowHelpers::Tray;
 
 WindowHelpers::WindowHelpers() {
 	isCapsLockingDisabled = false;
-	id = 0;
+	isWidowsKeyDisabled = false;
+	isMenuKeyDisabled = false;
 }
 
 HWND WindowHelpers::getHandler() {
@@ -18,15 +21,13 @@ bool WindowHelpers::isNoCapsLockEnabled() {
 	return isCapsLockingDisabled;
 }
 
-void WindowHelpers::SetIsDisabled(bool enabled) {
-	isCapsLockingDisabled = enabled;
+bool WindowHelpers::isWindowsKeyEnabled()
+{
+	return isWidowsKeyDisabled;
+}
 
-	if (!isCapsLockingDisabled) {
-		ChangeTrayTitle("NoCapsLock - Running");
-	} else {
-		ChangeTrayTitle("NoCapsLock - Stopped");
-	}
-
+bool WindowHelpers::isMenuKeyEnabled() {
+	return isMenuKeyDisabled;
 }
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
@@ -48,10 +49,10 @@ void WindowHelpers::TaskbarNotify(HWND hWnd) {
 
 		Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 		Tray.hWnd = hWnd;
-		strcpy_s(Tray.szTip, "NoCapsLock - Running");
+		strcpy_s(Tray.szTip, "NoCapsLock");
 		Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
 		Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
-		Tray.uID = id;
+		Tray.uID = 01;
 		Shell_NotifyIcon(NIM_ADD, &Tray);
 		ToolTipCreated = true;
 	}
@@ -106,12 +107,9 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
 
 			SetForegroundWindow(hwnd);
-			if (isCapsLockingDisabled) {
-				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_UNCHECKED);
-			}
-			else {
-				CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, MF_CHECKED);
-			}
+			CheckMenuItem(hMenu, ID__BLOCKCAPSLOCK, isCapsLockingDisabled ? MF_UNCHECKED : MF_CHECKED);
+			CheckMenuItem(hMenu, ID__DISABLEWINDOWSKEY, isWidowsKeyDisabled ? MF_UNCHECKED : MF_CHECKED);
+			CheckMenuItem(hMenu, ID__DISABLEAPPSKEY, isMenuKeyDisabled ? MF_UNCHECKED : MF_CHECKED);
 
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
 			break;
@@ -127,14 +125,14 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 		case ID__BLOCKCAPSLOCK:
 			isCapsLockingDisabled = !isCapsLockingDisabled;
+			break;
 
-			if (!isCapsLockingDisabled) {
-				ChangeTrayTitle("NoCapsLock - Running");
-				helpers::DisableCapsLock();
-			} else {
-				ChangeTrayTitle("NoCapsLock - Stopped");
-			}
+		case ID__DISABLEWINDOWSKEY:
+			isWidowsKeyDisabled = !isWidowsKeyDisabled;
+			break;
 
+		case ID__DISABLEAPPSKEY:
+			isMenuKeyDisabled = !isMenuKeyDisabled;
 			break;
 
 		case ID__SOURCECODE:

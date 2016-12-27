@@ -19,7 +19,8 @@ public:
 public:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 	static bool isNoCapsLockEnabled();
-	static void SetIsDisabled(bool enabled);
+	static bool isWindowsKeyEnabled();
+	static bool isMenuKeyEnabled();
 
 private:
 	static void ChangeTrayTitle(const char * title);
@@ -29,6 +30,7 @@ private:
 	static NOTIFYICONDATA Tray;
 	static bool ToolTipCreated;
 	static bool isCapsLockingDisabled;
-	static UINT32 id;
+	static bool isWidowsKeyDisabled;
+	static bool isMenuKeyDisabled;
 };
 

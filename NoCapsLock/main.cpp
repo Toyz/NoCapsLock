@@ -38,6 +38,18 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 			}
 		}
 
+		if (!WindowHelpers::isWindowsKeyEnabled()) {
+			if (hooked_key.vkCode == VK_LWIN || hooked_key.vkCode == VK_RWIN) {
+				return 1;
+			}
+		}
+
+		if (!WindowHelpers::isMenuKeyEnabled()) {
+			if (hooked_key.vkCode == VK_APPS) {
+				return 1;
+			}
+		}
+
 		SHIFT_key = GetAsyncKeyState(VK_SHIFT);
 		CTRL_key = GetAsyncKeyState(VK_CONTROL);
 		ALT_key = GetAsyncKeyState(VK_MENU);
@@ -51,20 +63,6 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'Q')
 			{
 				PostMessage(helpers::GetNoCapsLockWindow(), WM_CLOSE, 0, 0);
-			}
-
-			if (!WindowHelpers::isNoCapsLockEnabled()) {
-				if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'D')
-				{
-					WindowHelpers::SetIsDisabled(true);
-				}
-			}
-
-			if (WindowHelpers::isNoCapsLockEnabled()) {
-				if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'E')
-				{
-					WindowHelpers::SetIsDisabled(false);
-				}
 			}
 
 			SHIFT_key = 0;
