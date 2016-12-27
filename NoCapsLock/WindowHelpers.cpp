@@ -143,7 +143,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 		case ID__BLOCKCAPSLOCK:
 			isCapsLockingDisabled = !isCapsLockingDisabled;
 
-			if (isCapsLockingDisabled) {
+			if (!isCapsLockingDisabled) {
 				ChangeTrayTitle("NoCapsLock - Running");
 				helpers::DisableCapsLock();
 			} else {
