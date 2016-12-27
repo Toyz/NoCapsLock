@@ -32,7 +32,6 @@ void WindowHelpers::SetIsDisabled(bool enabled) {
 }
 
 void WindowHelpers::TooltipBallon(const char * text, const char * title) {
-	printf("Fired me\n");
 	Tray.dwInfoFlags = NIIF_USER | NIIF_INFO;
 	Tray.uTimeout = 3500;
 
