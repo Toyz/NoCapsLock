@@ -14,7 +14,6 @@ HWND WindowHelpers::getHandler() {
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
 	if (!ToolTipCreated) {
 		ShowWindow(hWnd, SHOW_WINDOW);
-		//Tray.cbSize = NOTIFYICONDATA_V2_SIZE;
 
 		if (IsWindowsVistaOrGreater()) {
 			Tray.cbSize = sizeof(Tray);
