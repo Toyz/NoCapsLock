@@ -19,7 +19,7 @@ bool helpers::SaveResourceToFile(char *fn, int res) {
 		MAKELANGID(LANG_NEUTRAL,
 			SUBLANG_NEUTRAL));
 
-	if (hrsrc == NULL) return FALSE;
+	if (hrsrc == NULL) return false;
 	DWORD size = SizeofResource(GetModuleHandle(NULL), hrsrc);
 	HGLOBAL hglob = LoadResource(GetModuleHandle(NULL), hrsrc);
 	LPVOID rdata = LockResource(hglob);
@@ -27,18 +27,16 @@ bool helpers::SaveResourceToFile(char *fn, int res) {
 		CreateFile(fn, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	DWORD writ; WriteFile(hFile, rdata, size, &writ, NULL);
 	CloseHandle(hFile);
-	return TRUE;
+	return true;
 
 	return true;
 }
 
-unsigned int helpers::split(const std::string &txt, std::vector<std::string> &strs, char ch)
-{
+unsigned int helpers::split(const std::string &txt, std::vector<std::string> &strs, char ch) {
 	int pos = static_cast<int>(txt.find(ch));
 	int initialPos = 0;
 	strs.clear();
 
-	// Decompose statement
 	while (pos != std::string::npos) {
 		strs.push_back(txt.substr(initialPos, pos - initialPos + 1));
 		initialPos = pos + 1;
@@ -46,7 +44,6 @@ unsigned int helpers::split(const std::string &txt, std::vector<std::string> &st
 		pos = static_cast<int>(txt.find(ch, initialPos));
 	}
 
-	// Add the last one
 	strs.push_back(txt.substr(initialPos, MyMinTool(pos, static_cast<int>(txt.size())) - initialPos + 1));
 
 	return  static_cast<int>(strs.size());
