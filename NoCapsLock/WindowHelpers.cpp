@@ -122,6 +122,10 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
 			InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, helpers::GetString(IDS_SHOWOPTIONS));
 
+#if _DEBUG
+			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
+			InsertMenu(hMenu, 0, MFT_STRING, 0x9293, "Show Console");
+#endif
 			SetForegroundWindow(hwnd);
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
 			break;
@@ -145,6 +149,10 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			}
 			break;
 		}
+
+		case 0x9293:
+			ShowWindow(helpers::GetConsoleWindow(), 1);
+			break;
 
 		case ID__SOURCECODE:
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);

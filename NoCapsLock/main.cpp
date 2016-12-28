@@ -38,6 +38,10 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		int key = hooked_key.vkCode;
 
+#if _DEBUG
+		printf("Key = %d\n", key);
+#endif
+
 		KeyObject::key_t key_st = KeyManager::FindKey(hooked_key.vkCode);
 
 		if (key_st.title != "") {
@@ -52,14 +56,8 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
 		if (key >= 'A' && key <= 'Z')
 		{
-
 			if (GetAsyncKeyState(VK_SHIFT) >= 0) key += 32;
 
-			// Lets you quit the program lmao
-			if (CTRL_key != 0 && ALT_key != 0 && SHIFT_key != 0 && key == 'Q')
-			{
-				PostMessage(helpers::GetNoCapsLockWindow(), WM_CLOSE, 0, 0);
-			}
 
 			SHIFT_key = 0;
 			CTRL_key = 0;
