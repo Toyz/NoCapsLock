@@ -88,7 +88,7 @@ void WindowHelpers::CreateUI(HWND hwnd) {
 			2, startX, 400, 20,
 			hwnd, (HMENU) it->first, NULL, NULL);
 
-		CheckDlgButton(hwnd, it->first, it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
+		CheckDlgButton(hwnd, static_cast<int>(it->first), it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
 		startX += 22;
 	}
 
@@ -115,7 +115,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			for (it = keys.begin(); it != keys.end(); it++)
 			{
 				InsertMenu(hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
-				CheckMenuItem(hMenu, it->first, it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
+				CheckMenuItem(hMenu, static_cast<int>(it->first), it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
 			}
 
 
@@ -148,7 +148,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 			if (KeyMeta.title != "") {
 				KeyMeta.enabled = !KeyMeta.enabled;
-				CheckDlgButton(hwnd, wparam, KeyMeta.enabled ? BST_CHECKED : BST_UNCHECKED);
+				CheckDlgButton(hwnd, static_cast<int>(wparam), KeyMeta.enabled ? BST_CHECKED : BST_UNCHECKED);
 				KeyManager::UpdateByKey(wparam, KeyMeta);
 			}
 		}
