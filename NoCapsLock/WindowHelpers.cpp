@@ -120,7 +120,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 
 #if _DEBUG
-			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "Show Options");
+			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
 			InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, "Show Options");
 #endif
 
