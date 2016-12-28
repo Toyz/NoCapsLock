@@ -85,7 +85,7 @@ void WindowHelpers::CreateCustomMenuOptions(HWND hwnd) {
 	{
 		CreateWindow(TEXT("button"), TEXT(it->second.title.c_str()),
 			WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
-			3, startX, 300, 20,
+			3, startX, 300 - 6, 20,
 			hwnd, (HMENU) it->first, NULL, NULL);
 
 		CheckDlgButton(hwnd, static_cast<int>(it->first), it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
