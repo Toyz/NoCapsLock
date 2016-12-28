@@ -18,6 +18,7 @@
 #include "KeyObject.h"
 
 HHOOK hKeyboardHook;
+std::string conf_header;
 
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -104,13 +105,18 @@ void AddKeysToManager() {
 	std::string line;
 	while (std::getline(myfile, line))
 	{
-		if (std::empty(line)) continue;
+		if (std::empty(line)) {
+			conf_header += "\n";
+			continue;
+		}
 		
 		std::vector<std::string> values;
 		int test = helpers::split(line, values, '|');
 
-		if (line.at(0) == '#') continue;
-		if (test <= 0 || values.size() <= 0) continue;
+		if (line.at(0) == '#' || test <= 0 || values.size() <= 0) {
+			conf_header += line + "\n";
+			continue;
+		}
 		int key = std::stoi(values[0]);
 		bool enabled = helpers::StringToBool(values[1]);
 		std::string title = values[2];
@@ -129,6 +135,8 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
 
 		std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
 		std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
+		myfile << conf_header;
+		
 		for (it = keys.begin(); it != keys.end(); it++)
 		{
 			myfile << it->first << "|" << it->second.enabled << "|" << it->second.title << "\n";

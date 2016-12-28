@@ -23,7 +23,6 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-	static HWND CreateAVerticalScrollBar(HWND hwndParent, int sbHeight);
 	static void CreateUI(HWND hwnd);
 	static void ChangeTrayTitle(const char * title);
 	HWND hwndWindow;
