@@ -2,6 +2,8 @@
 
 bool WindowHelpers::ToolTipCreated = false;
 NOTIFYICONDATA WindowHelpers::Tray;
+RECT winSize{ 0, 310, 0, 400 };
+
 
 WindowHelpers::WindowHelpers() {
 }
@@ -9,7 +11,6 @@ WindowHelpers::WindowHelpers() {
 HWND WindowHelpers::getHandler() {
 	return hwndWindow;
 }
-
 
 void WindowHelpers::TaskbarNotify(HWND hWnd) {
 	if (!ToolTipCreated) {
@@ -56,10 +57,16 @@ int WindowHelpers::CreateWndProc() {
 		return 1;
 	}
 
+	std::string title = helpers::GetString(IDS_TITLE);
+	title += " - Options";
+
+	int xPos = (GetSystemMetrics(SM_CXSCREEN) - winSize.bottom) / 2;
+	int yPos = (GetSystemMetrics(SM_CYSCREEN) - winSize.top) / 2;
+
 	hwndWindow = CreateWindow(TEXT(NOCAPSCLASS),
-		TEXT("Options"),
+		TEXT(title.c_str()),
 		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU | WS_MINIMIZEBOX,
-		520, 20, 300, 400,
+		xPos , yPos, winSize.top, winSize.bottom,
 		NULL,
 		LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU2)),
 		hInstance, NULL);
@@ -85,7 +92,7 @@ void WindowHelpers::CreateCustomMenuOptions(HWND hwnd) {
 	{
 		CreateWindow(TEXT("button"), TEXT(it->second.title.c_str()),
 			WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
-			3, startX, 300 - 6, 20,
+			3, startX, winSize.top - 6, 20,
 			hwnd, (HMENU) it->first, NULL, NULL);
 
 		CheckDlgButton(hwnd, static_cast<int>(it->first), it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
