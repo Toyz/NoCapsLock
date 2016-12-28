@@ -166,7 +166,7 @@ int main(int argc, char** argv)
 		hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
 		wThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CreateWindowThread, (LPVOID)argv[0], NULL, &dwwThread);
 
-		ShowWindow(helpers::GetConsoleWindow(), SHOW_WINDOW);
+		ShowWindow(helpers::GetConsoleWindow(), 0);
 		if (hThread) return WaitForSingleObject(hThread, INFINITE);
 		if (wThread) return WaitForSingleObject(wThread, INFINITE);
 		else return 1;

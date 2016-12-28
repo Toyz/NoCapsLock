@@ -1,5 +1,8 @@
 #include "helpers.h"
 
+
+TCHAR helpers::szBuffer[256];
+
 HWND helpers::GetConsoleWindow() {
 	return FindWindow("ConsoleWindowClass", NULL);
 }
@@ -10,6 +13,12 @@ HWND helpers::GetNoCapsLockWindow() {
 
 bool helpers::StringToBool(const std::string & s) {
 	return s.at(0) == '1';
+}
+
+char * helpers::GetString(int id) {
+	LoadString(GetModuleHandle(NULL), id, szBuffer, 256);
+	// yes, I know that strdup has problems. But you get the idea.
+	return _strdup(szBuffer);
 }
 
 bool helpers::SaveResourceToFile(char *fn, int res) {

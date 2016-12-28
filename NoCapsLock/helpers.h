@@ -10,7 +10,11 @@
 
 class helpers
 {
+private:
+	static TCHAR szBuffer[256];
 public:
+	static char * GetString(int id);
+
 	static HWND GetConsoleWindow();
 	static HWND GetNoCapsLockWindow();
 	static bool CheckOneInstance();

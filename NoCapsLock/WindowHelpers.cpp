@@ -29,7 +29,7 @@ void WindowHelpers::TaskbarNotify(HWND hWnd) {
 
 		Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 		Tray.hWnd = hWnd;
-		strcpy_s(Tray.szTip, "NoCapsLock");
+		strcpy_s(Tray.szTip, helpers::GetString(IDS_TITLE));
 		Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
 		Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
 		Tray.uID = 01;
@@ -61,7 +61,7 @@ int WindowHelpers::CreateWndProc() {
 		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU | WS_MINIMIZEBOX,
 		520, 20, 300, 400,
 		NULL,
-		NULL,
+		LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU2)),
 		hInstance, NULL);
 
 	UpdateWindow(hwndWindow);
@@ -103,6 +103,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 	case WM_CREATE:
 		CreateUI(hwnd);
 		break;
+
 	case WM_CONTEXTMSGEVENT:
 		switch (lparam) {
 		case WM_RBUTTONUP:
@@ -118,11 +119,8 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 				CheckMenuItem(hMenu, static_cast<int>(it->first), it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
 			}
 
-
-#if _DEBUG
 			InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
-			InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, "Show Options");
-#endif
+			InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, helpers::GetString(IDS_SHOWOPTIONS));
 
 			SetForegroundWindow(hwnd);
 			TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
@@ -132,10 +130,12 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 	case WM_COMMAND:
 		switch (wparam) {
+		case ID_FILE_QUT:
 		case ID__QUIT:
 			PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
 			PostQuitMessage(0);
 			break;
+
 		case ID__SOURCECODE:
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
 			break;
@@ -143,6 +143,17 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 		case ID__SHOWOPTIONS:
 			ShowWindow(hwnd, 1);
 			break;
+
+		case ID_HELP_ABOUT:
+			MessageBox(
+				NULL,
+				"NoCapsLock is created by\n\nToyz\n\nSourse code is located on github",
+				"About",
+				MB_OK
+			);
+
+			break;
+
 		default:
 			KeyObject::key_t KeyMeta = KeyManager::FindKey(wparam);
 
@@ -154,6 +165,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 		}
 
 		break;
+
 	case WM_CLOSE:
 		ShowWindow(hwnd, 0);
 		return true;
