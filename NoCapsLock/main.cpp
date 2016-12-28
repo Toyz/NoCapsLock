@@ -125,9 +125,7 @@ void AddKeysToManager() {
 	}
 }
 
-BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType)
-{
-	printf("Called closing hook?\n");
+BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
 	switch (dwCtrlType) {
 	case CTRL_CLOSE_EVENT:
 		std::ofstream myfile;
