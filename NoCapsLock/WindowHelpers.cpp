@@ -131,10 +131,20 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 	case WM_COMMAND:
 		switch (wparam) {
 		case ID_FILE_QUT:
-		case ID__QUIT:
-			PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
-			PostQuitMessage(0);
+		case ID__QUIT: {
+			int msgboxID = MessageBox(
+				NULL,
+				"Are you sure you wish to quit the progam?",
+				"Are you sure?",
+				MB_ICONEXCLAMATION | MB_YESNO
+			);
+
+			if (msgboxID == IDYES) {
+				PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
+				PostQuitMessage(0);
+			}
 			break;
+		}
 
 		case ID__SOURCECODE:
 			ShellExecute(0, 0, "https://github.com/Toyz/NoCapsLock", 0, 0, SW_SHOW);
