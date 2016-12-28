@@ -1,0 +1,10 @@
+# Key_codes are from http://www.kbdedit.com/manual/low_level_vk_list.html
+# Convert the Hex to proper key code EX 0x5D is 93
+
+# key_code | default option | title
+
+#edit below
+20|1|Disable Caps Lock
+91|1|Disable Left Windows Key
+92|1|Disable Right Windows Key
+93|1|Disable Apps Key

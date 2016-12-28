@@ -44,7 +44,7 @@ int WindowHelpers::CreateWndProc() {
 	WNDCLASS wc = { 0 };
 	wc.hbrBackground = CreateSolidBrush(RGB(240, 240, 240));
 	wc.hCursor = LoadCursor(hInstance, IDC_ARROW);
-	wc.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
+	wc.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
 	wc.hInstance = hInstance;
 	wc.lpfnWndProc = WndProc;
 	wc.lpszClassName = TEXT(NOCAPSCLASS);
@@ -57,10 +57,10 @@ int WindowHelpers::CreateWndProc() {
 	}
 
 	hwndWindow = CreateWindow(TEXT(NOCAPSCLASS),
-		TEXT("Options - NoCapsLock"),
-		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU,
-		520, 20, 550, 400,
-		helpers::GetConsoleWindow(),
+		TEXT("Options"),
+		WS_OVERLAPPED | WS_BORDER | WS_SYSMENU | WS_MINIMIZEBOX,
+		520, 20, 300, 400,
+		NULL,
 		NULL,
 		hInstance, NULL);
 
@@ -80,16 +80,16 @@ void WindowHelpers::CreateUI(HWND hwnd) {
 	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
 	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
 	
-	int startX = 2;
+	int startX = 3;
 	for (it = keys.begin(); it != keys.end(); it++)
 	{
 		CreateWindow(TEXT("button"), TEXT(it->second.title.c_str()),
 			WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
-			2, startX, 400, 20,
+			3, startX, 300, 20,
 			hwnd, (HMENU) it->first, NULL, NULL);
 
 		CheckDlgButton(hwnd, static_cast<int>(it->first), it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
-		startX += 22;
+		startX += 23;
 	}
 
 	HFONT defaultFont;
