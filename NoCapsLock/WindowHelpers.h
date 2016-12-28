@@ -23,7 +23,8 @@ public:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
 
 private:
-	static void CreateUI(HWND hwnd);
+	static void CreateMenuNotifyContext(HWND hwnd);
+	static void CreateCustomMenuOptions(HWND hwnd);
 	static void ChangeTrayTitle(const char * title);
 	HWND hwndWindow;
 
