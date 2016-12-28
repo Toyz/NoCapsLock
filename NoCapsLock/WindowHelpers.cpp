@@ -155,8 +155,6 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 		break;
 	case WM_CLOSE:
-		//PostMessage(helpers::GetConsoleWindow(), WM_CLOSE, 0, 0);
-		//PostQuitMessage(0);
 		ShowWindow(hwnd, 0);
 		return true;
 	}
