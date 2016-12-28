@@ -8,20 +8,6 @@ HWND helpers::GetNoCapsLockWindow() {
 	return FindWindow(NOCAPSCLASS, NULL);
 }
 
-int helpers::getStringWidth(HWND win, const char *text, HFONT font) {
-	HDC dc = GetDC(win);
-	SelectObject(dc, font);
-
-	RECT rect = { 0, 0, 0, 0 };
-	DrawText(dc, text, strlen(text), &rect, DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE);
-	int textWidth = abs(rect.right - rect.left);
-
-	ReleaseDC(NULL, dc);
-
-	printf("Font Width: %d\n", textWidth);
-	return textWidth;
-}
-
 bool helpers::StringToBool(const std::string & s) {
 	return s.at(0) == '1';
 }
@@ -48,7 +34,7 @@ bool helpers::SaveResourceToFile(char *fn, int res) {
 
 unsigned int helpers::split(const std::string &txt, std::vector<std::string> &strs, char ch)
 {
-	int pos = txt.find(ch);
+	int pos = static_cast<int>(txt.find(ch));
 	int initialPos = 0;
 	strs.clear();
 
@@ -57,13 +43,13 @@ unsigned int helpers::split(const std::string &txt, std::vector<std::string> &st
 		strs.push_back(txt.substr(initialPos, pos - initialPos + 1));
 		initialPos = pos + 1;
 
-		pos = txt.find(ch, initialPos);
+		pos = static_cast<int>(txt.find(ch, initialPos));
 	}
 
 	// Add the last one
 	strs.push_back(txt.substr(initialPos, MyMinTool(pos, static_cast<int>(txt.size())) - initialPos + 1));
 
-	return strs.size();
+	return  static_cast<int>(strs.size());
 }
 
 bool helpers::CheckOneInstance() {
