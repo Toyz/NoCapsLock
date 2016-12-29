@@ -41,6 +41,9 @@
     <ClCompile Include="WindowHelpers.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="TaskbarNotifier.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helpers.h">
@@ -60,6 +63,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskbarNotifier.h">
+      <Filter>Header Files\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -148,6 +148,7 @@
     <ClCompile Include="helpers.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TaskbarNotifier.cpp" />
     <ClCompile Include="WindowHelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="KeyObject.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TaskbarNotifier.h" />
     <ClInclude Include="WindowHelpers.h" />
   </ItemGroup>
   <ItemGroup>

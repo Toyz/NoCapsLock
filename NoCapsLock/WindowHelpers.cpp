@@ -2,41 +2,15 @@
 
 bool WindowHelpers::ToolTipCreated = false;
 NOTIFYICONDATA WindowHelpers::Tray;
-RECT winSize{ 0, 310, 0, 400 };
+TaskbarNotifier notifier;
 
+RECT winSize{ 0, 310, 0, 400 };
 
 WindowHelpers::WindowHelpers() {
 }
 
 HWND WindowHelpers::getHandler() {
 	return hwndWindow;
-}
-
-void WindowHelpers::TaskbarNotify(HWND hWnd) {
-	if (!ToolTipCreated) {
-		ShowWindow(hWnd, SHOW_WINDOW);
-
-		if (IsWindowsVistaOrGreater()) {
-			Tray.cbSize = sizeof(Tray);
-			Tray.uVersion = NOTIFYICON_VERSION_4;
-		}
-
-		else if (IsWindowsXPOrGreater()) {
-			Tray.cbSize = NOTIFYICONDATA_V3_SIZE;
-			Tray.uVersion = NOTIFYICON_VERSION;
-		}
-
-		Shell_NotifyIcon(NIM_SETVERSION, &Tray);
-
-		Tray.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-		Tray.hWnd = hWnd;
-		strcpy_s(Tray.szTip, helpers::GetString(IDS_TITLE));
-		Tray.uCallbackMessage = WM_CONTEXTMSGEVENT;
-		Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
-		Tray.uID = 01;
-		Shell_NotifyIcon(NIM_ADD, &Tray);
-		ToolTipCreated = true;
-	}
 }
 
 int WindowHelpers::CreateWndProc() {
@@ -72,7 +46,10 @@ int WindowHelpers::CreateWndProc() {
 		hInstance, NULL);
 
 	UpdateWindow(hwndWindow);
-	TaskbarNotify(hwndWindow);
+	TaskbarNotifier nf(hwndWindow);
+	notifier = nf;
+
+	notifier.Create();
 
 	MSG msg;
 	while (GetMessage(&msg, hwndWindow, 0, 0))
