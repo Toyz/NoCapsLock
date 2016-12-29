@@ -181,8 +181,3 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 	return DefWindowProc(hwnd, message, wparam, lparam);
 }
 
-void WindowHelpers::ChangeTrayTitle(const char * title) {
-	strcpy_s(Tray.szTip, title);
-	Tray.uFlags = NIF_ICON | NIF_TIP | NIF_SHOWTIP | NIF_MESSAGE | NIF_GUID;
-	Shell_NotifyIcon(NIM_MODIFY, &Tray);
-}

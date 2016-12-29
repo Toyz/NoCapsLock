@@ -12,12 +12,6 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{7213603f-d426-4ed0-8b95-fe3525f62dd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Key_System">
-      <UniqueIdentifier>{e38cd6e5-8a0a-43f6-ab38-a8edef668c39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Key_System">
-      <UniqueIdentifier>{004e42a1-8dc4-4f27-8829-44eba7f62aaf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Windows">
       <UniqueIdentifier>{cbe0588d-60df-432c-9f42-baee2287b4e6}</UniqueIdentifier>
     </Filter>
@@ -26,6 +20,12 @@
     </Filter>
     <Filter Include="Header Files\Misc">
       <UniqueIdentifier>{9ddf4646-389e-4802-a4e9-378cb6654c83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Keys">
+      <UniqueIdentifier>{e38cd6e5-8a0a-43f6-ab38-a8edef668c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Keys">
+      <UniqueIdentifier>{004e42a1-8dc4-4f27-8829-44eba7f62aaf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +36,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyManager.cpp">
-      <Filter>Source Files\Key_System</Filter>
+      <Filter>Source Files\Keys</Filter>
     </ClCompile>
     <ClCompile Include="WindowHelpers.cpp">
       <Filter>Source Files\Windows</Filter>
@@ -50,10 +50,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KeyManager.h">
-      <Filter>Header Files\Key_System</Filter>
+      <Filter>Header Files\Keys</Filter>
     </ClInclude>
     <ClInclude Include="KeyObject.h">
-      <Filter>Header Files\Key_System</Filter>
+      <Filter>Header Files\Keys</Filter>
     </ClInclude>
     <ClInclude Include="WindowHelpers.h">
       <Filter>Header Files\Windows</Filter>
@@ -61,11 +61,11 @@
     <ClInclude Include="defines.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="TaskbarNotifier.h">
       <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
