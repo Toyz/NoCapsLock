@@ -152,6 +152,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 				_ctxHandler.CheckItem(static_cast<int>(wparam), KeyMeta.enabled);
 				KeyManager::UpdateByKey(wparam, KeyMeta);
 			}
+			break;
 		}
 
 		break;

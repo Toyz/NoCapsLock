@@ -1,15 +1,11 @@
 #define _WIN32_WINNT 0x0601
 #pragma comment( lib, "user32.lib" )
 
-#include <iostream>
 #include <windows.h>
 #include <stdio.h>
 #include <shellapi.h>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
 
+#include "ConfigHandler.h"
 #include "defines.h"
 #include "resource.h"
 #include "helpers.h"
@@ -18,7 +14,12 @@
 #include "KeyObject.h"
 
 HHOOK hKeyboardHook;
-std::string conf_header;
+ConfigHandler _cfgHandler;
+HANDLE hThread;
+HANDLE wThread;
+DWORD dwThread;
+DWORD dwwThread;
+
 
 __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, LPARAM lParam)
 {
@@ -96,48 +97,10 @@ void CreateWindowThread() {
 	winhelpers.CreateWndProc();
 }
 
-void AddKeysToManager() {
-	std::ifstream myfile;
-	myfile.open("keys.txt");
-
-	std::string line;
-	while (std::getline(myfile, line))
-	{
-		if (std::empty(line)) {
-			conf_header += "\n";
-			continue;
-		}
-		
-		std::vector<std::string> values;
-		int test = helpers::split(line, values, '|');
-
-		if (line.at(0) == '#' || test <= 0 || values.size() <= 0) {
-			conf_header += line + "\n";
-			continue;
-		}
-		int key = std::stoi(values[0]);
-		bool enabled = helpers::StringToBool(values[1]);
-		std::string title = values[2];
-
-		KeyManager::AddKey(key, KeyObject::CreateKey(title, enabled));
-	}
-}
-
 BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
 	switch (dwCtrlType) {
 	case CTRL_CLOSE_EVENT:
-		std::ofstream myfile;
-		myfile.open("keys.txt");
-
-		std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
-		std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
-		myfile << conf_header;
-		
-		for (it = keys.begin(); it != keys.end(); it++)
-		{
-			myfile << it->first << "|" << it->second.enabled << "|" << it->second.title << "\n";
-		}
-		myfile.close();
+		_cfgHandler.Save();
 		break;
 	}
 
@@ -147,16 +110,16 @@ BOOL WINAPI ConsoleHandlerRoutine(DWORD dwCtrlType) {
 int main(int argc, char** argv)
 {
 	if (helpers::CheckOneInstance()) {
-		if (!helpers::FileExist("keys.txt")) {
-			helpers::SaveResourceToFile("keys.txt", IDR_TEXT1);
+		if (!helpers::FileExist(CONFIGFILE)) {
+			helpers::SaveResourceToFile(CONFIGFILE, IDR_TEXT1);
 		}
-		BOOL ret = SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
-		HANDLE hThread;
-		HANDLE wThread;
-		DWORD dwThread;
-		DWORD dwwThread;
 
-		AddKeysToManager();
+		ConfigHandler _cfg(CONFIGFILE);
+		_cfgHandler = _cfg;
+		_cfgHandler.Load();
+
+		BOOL ret = SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
+
 		printf("Simple tool created by Toyz which allows you to kill capslock\n");
 		printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
 		printf("LICENSED UNDER APACHE 2.0\n");

@@ -20,7 +20,7 @@ void ContextMenuHandler::CreateMenu() {
 	{
 		//InsertMenu(_hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
 		AddItem(0, MFT_STRING, it->first, it->second.title.c_str());
-		CheckItem(static_cast<int>(it->first), it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
+		CheckItem(static_cast<int>(it->first), it->second.enabled);
 	}
 
 	AddItem(0, MFT_SEPARATOR, -1, "-");

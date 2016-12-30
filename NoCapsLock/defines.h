@@ -1,6 +1,7 @@
 #pragma once
 #define WM_CONTEXTMSGEVENT (WM_USER + 1)
 #define NOCAPSCLASS "NoCapsLockWindow"
+#define CONFIGFILE "keys.txt"
 
 #if _DEBUG
 #define SHOW_WINDOW 1

@@ -145,6 +145,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigHandler.cpp" />
     <ClCompile Include="ContextMenuHandler.cpp" />
     <ClCompile Include="helpers.cpp" />
     <ClCompile Include="KeyManager.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="WindowHelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConfigHandler.h" />
     <ClInclude Include="ContextMenuHandler.h" />
     <ClInclude Include="defines.h" />
     <ClInclude Include="helpers.h" />

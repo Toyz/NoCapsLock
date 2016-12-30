@@ -27,6 +27,9 @@
     <Filter Include="Source Files\Keys">
       <UniqueIdentifier>{004e42a1-8dc4-4f27-8829-44eba7f62aaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{9c513b9a-40ea-4c5b-8ca6-a2984008dae6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,13 +48,13 @@
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
     <ClCompile Include="ContextMenuHandler.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigHandler.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="helpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="KeyManager.h">
       <Filter>Header Files\Keys</Filter>
     </ClInclude>
@@ -61,9 +64,6 @@
     <ClInclude Include="WindowHelpers.h">
       <Filter>Header Files\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="defines.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="TaskbarNotifier.h">
       <Filter>Header Files\Windows</Filter>
     </ClInclude>
@@ -71,7 +71,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ContextMenuHandler.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigHandler.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="defines.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="helpers.h">
+      <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
