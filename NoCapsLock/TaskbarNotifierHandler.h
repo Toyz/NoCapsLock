@@ -7,7 +7,7 @@
 #include "resource.h"
 #include "helpers.h"
 
-class TaskbarNotifier
+class TaskbarNotifierHandler
 {
 private:
 	HWND _parent;
@@ -15,9 +15,9 @@ private:
 	NOTIFYICONDATA Tray;
 
 public:
-	TaskbarNotifier() { }
-	TaskbarNotifier(HWND parent);
-	~TaskbarNotifier();
+	TaskbarNotifierHandler() { }
+	TaskbarNotifierHandler(HWND parent);
+	~TaskbarNotifierHandler();
 	void Create();
 	void ChangeTitle(const char * title);
 };

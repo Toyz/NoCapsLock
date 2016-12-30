@@ -41,17 +41,17 @@
     <ClCompile Include="KeyManager.cpp">
       <Filter>Source Files\Keys</Filter>
     </ClCompile>
-    <ClCompile Include="WindowHelpers.cpp">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="TaskbarNotifier.cpp">
-      <Filter>Source Files\Windows</Filter>
-    </ClCompile>
     <ClCompile Include="ContextMenuHandler.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
     <ClCompile Include="ConfigHandler.cpp">
       <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsHandler.cpp">
+      <Filter>Source Files\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskbarNotifierHandler.cpp">
+      <Filter>Source Files\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,12 +60,6 @@
     </ClInclude>
     <ClInclude Include="KeyObject.h">
       <Filter>Header Files\Keys</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowHelpers.h">
-      <Filter>Header Files\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskbarNotifier.h">
-      <Filter>Header Files\Windows</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
@@ -81,6 +75,12 @@
     </ClInclude>
     <ClInclude Include="helpers.h">
       <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsHandler.h">
+      <Filter>Header Files\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskbarNotifierHandler.h">
+      <Filter>Header Files\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

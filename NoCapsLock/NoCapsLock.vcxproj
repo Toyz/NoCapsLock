@@ -150,8 +150,8 @@
     <ClCompile Include="helpers.cpp" />
     <ClCompile Include="KeyManager.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TaskbarNotifier.cpp" />
-    <ClCompile Include="WindowHelpers.cpp" />
+    <ClCompile Include="TaskbarNotifierHandler.cpp" />
+    <ClCompile Include="WindowsHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConfigHandler.h" />
@@ -161,8 +161,8 @@
     <ClInclude Include="KeyManager.h" />
     <ClInclude Include="KeyObject.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TaskbarNotifier.h" />
-    <ClInclude Include="WindowHelpers.h" />
+    <ClInclude Include="TaskbarNotifierHandler.h" />
+    <ClInclude Include="WindowsHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NoCapsLock.rc" />

@@ -1,20 +1,17 @@
-#include "WindowHelpers.h"
+#include "WindowsHandler.h"
 
-bool WindowHelpers::ToolTipCreated = false;
-NOTIFYICONDATA WindowHelpers::Tray;
-TaskbarNotifier notifier;
+TaskbarNotifierHandler notifier;
 ContextMenuHandler _ctxHandler;
-
 RECT winSize{ 0, 310, 0, 400 };
 
-WindowHelpers::WindowHelpers() {
+WindowsHandler::WindowsHandler() {
 }
 
-HWND WindowHelpers::getHandler() {
+HWND WindowsHandler::getHandler() {
 	return hwndWindow;
 }
 
-int WindowHelpers::CreateWndProc() {
+int WindowsHandler::CreateWndProc() {
 	HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(helpers::GetConsoleWindow(), GWLP_HINSTANCE);
 
 	WNDCLASS wc = { 0 };
@@ -47,7 +44,7 @@ int WindowHelpers::CreateWndProc() {
 		hInstance, NULL);
 
 	UpdateWindow(hwndWindow);
-	TaskbarNotifier nf(hwndWindow);
+	TaskbarNotifierHandler nf(hwndWindow);
 	notifier = nf;
 
 	ContextMenuHandler ctx(hwndWindow);
@@ -65,7 +62,7 @@ int WindowHelpers::CreateWndProc() {
 	return 0;
 }
 
-void WindowHelpers::CreateCustomMenuOptions(HWND hwnd) {
+void WindowsHandler::CreateCustomMenuOptions(HWND hwnd) {
 	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
 	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
 	
@@ -86,7 +83,7 @@ void WindowHelpers::CreateCustomMenuOptions(HWND hwnd) {
 	SendMessage(hwnd, WM_SETFONT, WPARAM(defaultFont), TRUE);
 }
 
-LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WindowsHandler::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	switch (message) {
 	case WM_CREATE:
@@ -159,7 +156,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 
 	case WM_CLOSE:
 		ShowWindow(hwnd, 0);
-		return true;
+		return 1;
 	}
 
 	return DefWindowProc(hwnd, message, wparam, lparam);

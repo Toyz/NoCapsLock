@@ -9,7 +9,7 @@
 #include "defines.h"
 #include "resource.h"
 #include "helpers.h"
-#include "WindowHelpers.h"
+#include "WindowsHandler.h"
 #include "KeyManager.h"
 #include "KeyObject.h"
 
@@ -93,7 +93,7 @@ DWORD WINAPI CapsLockKillerHook(LPVOID lpParm)
 }
 
 void CreateWindowThread() {
-	WindowHelpers winhelpers;
+	WindowsHandler winhelpers;
 	winhelpers.CreateWndProc();
 }
 

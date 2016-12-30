@@ -6,16 +6,16 @@
 #include <map>
 
 #include "helpers.h"
-#include "TaskbarNotifier.h"
+#include "TaskbarNotifierHandler.h"
 #include "ContextMenuHandler.h"
 #include "resource.h"
 #include "defines.h"
 #include "KeyManager.h"
 
-class WindowHelpers
+class WindowsHandler
 {
 public:
-	WindowHelpers();
+	WindowsHandler();
 
 	int CreateWndProc();
 	HWND getHandler();
@@ -27,9 +27,6 @@ private:
 	HWND hwndWindow;
 
 private:
-	static NOTIFYICONDATA Tray;
-	static bool ToolTipCreated;
-
 	static void CreateCustomMenuOptions(HWND hwnd);
 };
 

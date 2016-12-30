@@ -1,16 +1,16 @@
-#include "TaskbarNotifier.h"
+#include "TaskbarNotifierHandler.h"
 
-TaskbarNotifier::TaskbarNotifier(HWND parent)
+TaskbarNotifierHandler::TaskbarNotifierHandler(HWND parent)
 {
 	_parent = parent;
 }
 
-TaskbarNotifier::~TaskbarNotifier()
+TaskbarNotifierHandler::~TaskbarNotifierHandler()
 {
 	// todo
 }
 
-void TaskbarNotifier::Create() {
+void TaskbarNotifierHandler::Create() {
 	if (_isCreated) return;
 
 	ShowWindow(_parent, SHOW_WINDOW);
@@ -37,7 +37,7 @@ void TaskbarNotifier::Create() {
 	_isCreated = true;
 }
 
-void TaskbarNotifier::ChangeTitle(const char * title) {
+void TaskbarNotifierHandler::ChangeTitle(const char * title) {
 	if (!_isCreated) return;
 
 	strcpy_s(Tray.szTip, title);
