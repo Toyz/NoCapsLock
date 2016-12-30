@@ -18,7 +18,6 @@ void ContextMenuHandler::CreateMenu() {
 	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
 	for (it = keys.begin(); it != keys.end(); it++)
 	{
-		//InsertMenu(_hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
 		AddItem(0, MFT_STRING, it->first, it->second.title.c_str());
 		CheckItem(static_cast<int>(it->first), it->second.enabled);
 	}
@@ -35,10 +34,12 @@ void ContextMenuHandler::CreateMenu() {
 }
 
 void ContextMenuHandler::AddItem(UINT pos, UINT type, UINT_PTR uIDNewItem, const char * text) {
+	if (!_created) return;
 	InsertMenu(_hMenu, pos, type, uIDNewItem, text);
 }
 
 void ContextMenuHandler::CheckItem(UINT id, bool checked) {
+	if (!_created) return;
 	CheckMenuItem(_hMenu, id, checked ? MF_CHECKED : MF_UNCHECKED);
 }
 
