@@ -3,6 +3,7 @@
 bool WindowHelpers::ToolTipCreated = false;
 NOTIFYICONDATA WindowHelpers::Tray;
 TaskbarNotifier notifier;
+ContextMenuHandler _ctxHandler;
 
 RECT winSize{ 0, 310, 0, 400 };
 
@@ -49,6 +50,10 @@ int WindowHelpers::CreateWndProc() {
 	TaskbarNotifier nf(hwndWindow);
 	notifier = nf;
 
+	ContextMenuHandler ctx(hwndWindow);
+	_ctxHandler = ctx;
+	_ctxHandler.CreateMenu();
+
 	notifier.Create();
 
 	MSG msg;
@@ -81,31 +86,6 @@ void WindowHelpers::CreateCustomMenuOptions(HWND hwnd) {
 	SendMessage(hwnd, WM_SETFONT, WPARAM(defaultFont), TRUE);
 }
 
-void WindowHelpers::CreateMenuNotifyContext(HWND hwnd) {
-	POINT cursor;
-	GetCursorPos(&cursor);
-	HMENU hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
-
-	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
-	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
-	for (it = keys.begin(); it != keys.end(); it++)
-	{
-		InsertMenu(hMenu, 0, MFT_STRING, it->first, it->second.title.c_str());
-		CheckMenuItem(hMenu, static_cast<int>(it->first), it->second.enabled ? MF_CHECKED : MF_UNCHECKED);
-	}
-
-	InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
-	InsertMenu(hMenu, 0, MFT_STRING, ID__SHOWOPTIONS, helpers::GetString(IDS_SHOWOPTIONS));
-
-#if _DEBUG
-	InsertMenu(hMenu, 0, MFT_SEPARATOR, -1, "-");
-	InsertMenu(hMenu, 0, MFT_STRING, 0x9293, helpers::GetString(IDS_SHOWCONSOLE));
-#endif
-
-	SetForegroundWindow(hwnd);
-	TrackPopupMenu((HMENU)GetSubMenu(hMenu, 0), TPM_LEFTALIGN, cursor.x, cursor.y, 0, hwnd, NULL);
-}
-
 LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
 {
 	switch (message) {
@@ -116,7 +96,9 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 	case WM_CONTEXTMSGEVENT:
 		switch (lparam) {
 		case WM_RBUTTONUP:
-			CreateMenuNotifyContext(hwnd);
+			POINT cursor;
+			GetCursorPos(&cursor);
+			_ctxHandler.Show(cursor);
 			break;
 		}
 		break;
@@ -167,6 +149,7 @@ LRESULT CALLBACK WindowHelpers::WndProc(HWND hwnd, UINT message, WPARAM wparam, 
 			if (KeyMeta.title != "") {
 				KeyMeta.enabled = !KeyMeta.enabled;
 				CheckDlgButton(hwnd, static_cast<int>(wparam), KeyMeta.enabled ? BST_CHECKED : BST_UNCHECKED);
+				_ctxHandler.CheckItem(static_cast<int>(wparam), KeyMeta.enabled);
 				KeyManager::UpdateByKey(wparam, KeyMeta);
 			}
 		}

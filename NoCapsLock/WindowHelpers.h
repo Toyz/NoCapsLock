@@ -7,6 +7,7 @@
 
 #include "helpers.h"
 #include "TaskbarNotifier.h"
+#include "ContextMenuHandler.h"
 #include "resource.h"
 #include "defines.h"
 #include "KeyManager.h"
@@ -29,7 +30,6 @@ private:
 	static NOTIFYICONDATA Tray;
 	static bool ToolTipCreated;
 
-	static void CreateMenuNotifyContext(HWND hwnd);
 	static void CreateCustomMenuOptions(HWND hwnd);
 };
 
