@@ -22,7 +22,7 @@ public:
 	~ContextMenuHandler();
 
 	void CreateMenu();
-	void AddItem(UINT Pos, UINT type, UINT_PTR uIDNewItem, const char * text);
+	void AddItem(UINT pos, UINT type, UINT_PTR uIDNewItem, const char * text);
 	void CheckItem(UINT id, bool checked);
 
 	void Show(POINT pos);
