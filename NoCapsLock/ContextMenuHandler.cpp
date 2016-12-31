@@ -13,6 +13,7 @@ ContextMenuHandler::~ContextMenuHandler()
 
 void ContextMenuHandler::CreateMenu() {
 	if (_created) return;
+	_created = true;
 
 	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
 	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
@@ -30,7 +31,6 @@ void ContextMenuHandler::CreateMenu() {
 	AddItem(0, MFT_STRING, 0x9293, helpers::GetString(IDS_SHOWCONSOLE));
 #endif
 
-	_created = true;
 }
 
 void ContextMenuHandler::AddItem(UINT pos, UINT type, UINT_PTR uIDNewItem, const char * text) {
