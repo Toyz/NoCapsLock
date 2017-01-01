@@ -119,10 +119,9 @@ int main(int argc, char** argv)
 		_cfgHandler.Load();
 
 		BOOL ret = SetConsoleCtrlHandler(ConsoleHandlerRoutine, TRUE);
-
-		printf("Simple tool created by Toyz which allows you to kill capslock\n");
-		printf("Source code at: https://github.com/Toyz/NoCapsLock\n");
-		printf("LICENSED UNDER APACHE 2.0\n");
+	
+		printf("Debug Output\n"); 
+		printf("------------\n");
 
 		hThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CapsLockKillerHook, (LPVOID)argv[0], NULL, &dwThread);
 		wThread = CreateThread(NULL, NULL, (LPTHREAD_START_ROUTINE)CreateWindowThread, (LPVOID)argv[0], NULL, &dwwThread);

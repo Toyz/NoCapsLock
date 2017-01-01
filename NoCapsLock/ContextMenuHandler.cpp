@@ -6,7 +6,6 @@ ContextMenuHandler::ContextMenuHandler(HWND parent)
 	_hMenu = LoadMenu(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MENU1));
 }
 
-
 ContextMenuHandler::~ContextMenuHandler()
 {
 }
