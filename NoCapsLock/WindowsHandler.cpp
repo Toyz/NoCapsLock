@@ -63,18 +63,15 @@ int WindowsHandler::CreateWndProc() {
 }
 
 void WindowsHandler::CreateCustomMenuOptions(HWND hwnd) {
-	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
-	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
-	
 	int startX = 3;
-	for (it = keys.begin(); it != keys.end(); it++)
+	for (std::pair<DWORD_PTR, KeyObject::key_t> it : KeyManager::AllKeys())
 	{
-		CreateWindow(TEXT("button"), TEXT(it->second.title.c_str()),
+		CreateWindow(TEXT("button"), TEXT(it.second.title.c_str()),
 			WS_VISIBLE | WS_CHILD | BS_AUTOCHECKBOX,
 			3, startX, winSize.top - 6, 20,
-			hwnd, (HMENU) it->first, NULL, NULL);
+			hwnd, (HMENU) it.first, NULL, NULL);
 
-		CheckDlgButton(hwnd, static_cast<int>(it->first), it->second.enabled ? BST_CHECKED : BST_UNCHECKED);
+		CheckDlgButton(hwnd, static_cast<int>(it.first), it.second.enabled ? BST_CHECKED : BST_UNCHECKED);
 		startX += 23;
 	}
 
@@ -141,13 +138,13 @@ LRESULT CALLBACK WindowsHandler::WndProc(HWND hwnd, UINT message, WPARAM wparam,
 			break;
 
 		default:
-			KeyObject::key_t KeyMeta = KeyManager::FindKey(wparam);
+			KeyObject::key_t KeyMeta = KeyManager::Find(wparam);
 
 			if (KeyMeta.title != "") {
 				KeyMeta.enabled = !KeyMeta.enabled;
 				CheckDlgButton(hwnd, static_cast<int>(wparam), KeyMeta.enabled ? BST_CHECKED : BST_UNCHECKED);
 				_ctxHandler.CheckItem(static_cast<int>(wparam), KeyMeta.enabled);
-				KeyManager::UpdateByKey(wparam, KeyMeta);
+				KeyManager::Update(wparam, KeyMeta);
 			}
 			break;
 		}

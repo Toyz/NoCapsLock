@@ -14,12 +14,10 @@ void ContextMenuHandler::CreateMenu() {
 	if (_created) return;
 	_created = true;
 
-	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
-	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
-	for (it = keys.begin(); it != keys.end(); it++)
+	for (std::pair<DWORD_PTR, KeyObject::key_t> it : KeyManager::AllKeys())
 	{
-		AddItem(0, MFT_STRING, it->first, it->second.title.c_str());
-		CheckItem(static_cast<int>(it->first), it->second.enabled);
+		AddItem(0, MFT_STRING, it.first, it.second.title.c_str());
+		CheckItem(static_cast<int>(it.first), it.second.enabled);
 	}
 
 	AddItem(0, MFT_SEPARATOR, -1, "-");

@@ -30,7 +30,7 @@ void ConfigHandler::Load() {
 		bool enabled = helpers::StringToBool(values[1]);
 		std::string title = values[2];
 
-		KeyManager::AddKey(key, KeyObject::CreateKey(title, enabled));
+		KeyManager::Add(key, KeyObject::CreateKey(title, enabled));
 	}
 
 	myfile.close();
@@ -40,7 +40,7 @@ void ConfigHandler::Save() {
 	std::ofstream myfile;
 	myfile.open(_configFile);
 
-	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::GetKeyMap();
+	std::map<DWORD_PTR, KeyObject::key_t> keys = KeyManager::AllKeys();
 	std::map<DWORD_PTR, KeyObject::key_t>::iterator it;
 	myfile << _confHeader;
 

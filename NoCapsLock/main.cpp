@@ -43,7 +43,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 		printf("Key = %d\n", key);
 #endif
 
-		KeyObject::key_t key_st = KeyManager::FindKey(hooked_key.vkCode);
+		KeyObject::key_t key_st = KeyManager::Find(hooked_key.vkCode);
 
 		if (key_st.title != "") {
 			if (key_st.enabled) {
